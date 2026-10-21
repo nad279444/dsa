@@ -1,3 +1,17 @@
+"""Traverse a 2D matrix in spiral order: right -> down -> left -> up, layer by layer.
+
+Approach: keep four shrinking boundaries (starting/ending row and column).
+Each turn of the while loop walks all four sides of the current outer layer —
+across the top row, down the right column, back across the bottom row (skipped
+when the top and bottom rows have collapsed into one), then up the left column
+(skipped when the left and right columns have collapsed into one) — before
+moving every boundary one step inward. The two guards are what stop elements
+from being visited twice in single-row, single-column, or odd-centred matrices.
+Time: O(rows * cols), every element visited once; Space: O(1) extra
+besides the output list.
+"""
+
+
 def spiralTraverse(array):
     if not array or not array[0]:
         return []
@@ -39,8 +53,30 @@ def spiralTraverse(array):
 
 
 if __name__ == "__main__":
-    matrix_3x3 = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
+    # 3x3 matrix: outer layer then the centre
+    assert spiralTraverse([[1, 2, 3], [4, 5, 6], [7, 8, 9]]) == [
+        1, 2, 3, 6, 9, 8, 7, 4, 5,
+    ]
 
-    print("Test 1 (3x3 Matrix):")
-    print(spiralTraverse(matrix_3x3))
-    # Expected Output: [1, 2, 3, 6, 9, 8, 7, 4, 5]
+    # 4x4 matrix: two full layers
+    assert spiralTraverse(
+        [
+            [1, 2, 3, 4],
+            [5, 6, 7, 8],
+            [9, 10, 11, 12],
+            [13, 14, 15, 16],
+        ]
+    ) == [1, 2, 3, 4, 8, 12, 16, 15, 14, 13, 9, 5, 6, 7, 11, 10]
+
+    # Single row / single column (the guards skip the empty legs)
+    assert spiralTraverse([[1, 2, 3]]) == [1, 2, 3]
+    assert spiralTraverse([[1], [2], [3]]) == [1, 2, 3]
+
+    # Rectangular matrix
+    assert spiralTraverse([[1, 2], [3, 4]]) == [1, 2, 4, 3]
+
+    # Empty input
+    assert spiralTraverse([]) == []
+    assert spiralTraverse([[]]) == []
+
+    print("All tests passed")
